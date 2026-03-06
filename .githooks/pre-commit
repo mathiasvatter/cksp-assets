@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-repo_root="$(git rev-parse --show-toplevel)"
-"$repo_root/scripts/generate-index.sh"
-git add "$repo_root/index.html"
