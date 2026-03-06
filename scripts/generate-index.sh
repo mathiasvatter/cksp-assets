@@ -157,8 +157,6 @@ HTML_ITEM
   </main>
   <script>
     (function () {
-      const BASE_URL = 'https://mathiasvatter.github.io/cksp-assets/';
-
       function encodeAssetPath(path) {
         return encodeURI(path).replace(/%2F/g, '/');
       }
@@ -181,7 +179,7 @@ HTML_ITEM
 
       document.querySelectorAll('.asset').forEach((card) => {
         const path = card.dataset.path;
-        const url = BASE_URL + encodeAssetPath(path);
+        const url = new URL(encodeAssetPath(path), document.baseURI).href;
 
         const link = card.querySelector('.url');
         const img = card.querySelector('.preview');
