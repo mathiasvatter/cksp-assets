@@ -1,3 +1,28 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_root"
+
+base_url="https://mathiasvatter.github.io/cksp-assets/"
+
+html_escape() {
+  printf '%s' "$1" \
+    | sed -e 's/&/\&amp;/g' \
+          -e 's/</\&lt;/g' \
+          -e 's/>/\&gt;/g' \
+          -e 's/"/\&quot;/g' \
+          -e "s/'/\&#39;/g"
+}
+
+assets=()
+while IFS= read -r path; do
+  assets+=("$path")
+done < <(find assets -type f | sort)
+
+{
+  cat <<'HTML_HEAD'
 <!doctype html>
 <html lang="de">
 <head>
@@ -103,26 +128,32 @@
   <main class="wrap">
     <h1>CKSP Assets</h1>
     <p class="meta">Direkte Links zum Posten auf Foren und Chats.</p>
-    <section class="grid">
-      <article class="asset" data-path="assets/kontakt-log.gif">
-        <p class="path">assets/kontakt-log.gif</p>
+HTML_HEAD
+
+  if [[ ${#assets[@]} -eq 0 ]]; then
+    cat <<'HTML_EMPTY'
+    <div class="empty">Keine Dateien unter <code>assets/</code> gefunden.</div>
+HTML_EMPTY
+  else
+    echo '    <section class="grid">'
+    for path in "${assets[@]}"; do
+      escaped_path="$(html_escape "$path")"
+      cat <<HTML_ITEM
+      <article class="asset" data-path="$escaped_path">
+        <p class="path">$escaped_path</p>
         <a class="url" target="_blank" rel="noopener noreferrer"></a>
-        <img class="preview" loading="lazy" alt="assets/kontakt-log.gif">
+        <img class="preview" loading="lazy" alt="$escaped_path">
         <div class="actions">
           <button type="button" class="copy">URL kopieren</button>
           <span class="status"></span>
         </div>
       </article>
-      <article class="asset" data-path="assets/resource-pictures-completion.gif">
-        <p class="path">assets/resource-pictures-completion.gif</p>
-        <a class="url" target="_blank" rel="noopener noreferrer"></a>
-        <img class="preview" loading="lazy" alt="assets/resource-pictures-completion.gif">
-        <div class="actions">
-          <button type="button" class="copy">URL kopieren</button>
-          <span class="status"></span>
-        </div>
-      </article>
-    </section>
+HTML_ITEM
+    done
+    echo '    </section>'
+  fi
+
+  cat <<'HTML_TAIL'
   </main>
   <script>
     (function () {
@@ -177,3 +208,7 @@
   </script>
 </body>
 </html>
+HTML_TAIL
+} > index.html
+
+echo "Generated index.html with ${#assets[@]} asset(s)."
