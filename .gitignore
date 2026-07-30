@@ -1,1 +1,5 @@
 .DS_Store
+
+# Abgeleitete Videos aus scripts/convert-gifs.sh - werden im Pages-Workflow
+# bei jedem Push neu erzeugt und daher nicht versioniert.
+assets/video/

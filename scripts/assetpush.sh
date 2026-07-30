@@ -59,6 +59,16 @@ for path in "${asset_paths[@]}"; do
   asset_urls+=("${base_url}/${path}")
 done
 
+# GIFs werden im Pages-Workflow zusaetzlich nach MP4 konvertiert. Die Adresse
+# steht schon jetzt fest, ist aber erst nach dem Deploy erreichbar.
+mp4_urls=()
+for path in "${asset_paths[@]}"; do
+  if [[ "$path" == *.gif || "$path" == *.GIF ]]; then
+    rel="${path#assets/}"
+    mp4_urls+=("${base_url}/assets/video/${rel%.*}.mp4")
+  fi
+done
+
 if [[ ${#asset_urls[@]} -eq 0 ]]; then
   echo "Push complete. No added/updated files under assets/ in this commit."
   exit 0
@@ -67,6 +77,14 @@ fi
 for url in "${asset_urls[@]}"; do
   echo "$url"
 done
+
+if [[ ${#mp4_urls[@]} -gt 0 ]]; then
+  echo
+  echo "MP4-Varianten (nach Abschluss des Pages-Workflows verfuegbar):"
+  for url in "${mp4_urls[@]}"; do
+    echo "$url"
+  done
+fi
 
 if command -v pbcopy >/dev/null 2>&1; then
   printf "%s\n" "${asset_urls[@]}" | pbcopy

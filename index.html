@@ -31,9 +31,18 @@
       font-size: clamp(1.7rem, 2.5vw, 2.4rem);
     }
     .meta {
-      margin: 0 0 24px;
+      margin: 0 0 18px;
       color: var(--muted);
       font-size: 0.95rem;
+    }
+    .globals {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 24px;
+      font-size: 0.9rem;
+      color: var(--muted);
     }
     .grid {
       display: grid;
@@ -48,6 +57,7 @@
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
       display: grid;
       gap: 10px;
+      align-content: start;
     }
     .path {
       margin: 0;
@@ -69,13 +79,41 @@
       border-radius: 8px;
       border: 1px solid var(--line);
       background: #fafaf7;
+      display: block;
+    }
+    .preview[hidden] { display: none; }
+    .formats {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .fmt {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 11px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .fmt:hover { border-color: var(--accent); color: var(--accent-strong); }
+    .fmt[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .fmt .size {
+      font-weight: 400;
+      opacity: 0.75;
+      margin-left: 5px;
     }
     .actions {
       display: flex;
       gap: 8px;
       align-items: center;
     }
-    button {
+    button.copy, button.global-fmt {
       border: 0;
       border-radius: 9px;
       padding: 8px 12px;
@@ -84,7 +122,13 @@
       font-weight: 600;
       cursor: pointer;
     }
-    button:hover { background: var(--accent-strong); }
+    button.copy:hover, button.global-fmt:hover { background: var(--accent-strong); }
+    button.global-fmt {
+      background: transparent;
+      color: var(--accent-strong);
+      border: 1px solid var(--line);
+    }
+    button.global-fmt:hover { background: #ffffff; border-color: var(--accent); }
     .status {
       font-size: 0.82rem;
       color: var(--muted);
@@ -103,20 +147,197 @@
   <main class="wrap">
     <h1>CKSP Assets</h1>
     <p class="meta">Direkte Links zum Posten auf Foren und Chats.</p>
+    <div class="globals">
+      <span>Alle Animationen umschalten:</span>
+      <button type="button" class="global-fmt" data-fmt="gif">GIF</button>
+      <button type="button" class="global-fmt" data-fmt="mp4">MP4</button>
+    </div>
     <section class="grid">
-      <article class="asset" data-path="assets/kontakt-log.gif">
-        <p class="path">assets/kontakt-log.gif</p>
+      <article class="asset" data-path="assets/array_sizes_completion.gif" data-mp4="assets/video/array_sizes_completion.mp4" data-poster="assets/video/array_sizes_completion.jpg" data-format="mp4">
+        <p class="path">assets/array_sizes_completion.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">965 KB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">185 KB</span></button>
+        </div>
         <a class="url" target="_blank" rel="noopener noreferrer"></a>
-        <img class="preview" loading="lazy" alt="assets/kontakt-log.gif">
+        <img class="preview preview-gif" loading="lazy" alt="assets/array_sizes_completion.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
         <div class="actions">
           <button type="button" class="copy">URL kopieren</button>
           <span class="status"></span>
         </div>
       </article>
-      <article class="asset" data-path="assets/resource-pictures-completion.gif">
-        <p class="path">assets/resource-pictures-completion.gif</p>
+      <article class="asset" data-path="assets/changelog.gif" data-mp4="assets/video/changelog.mp4" data-poster="assets/video/changelog.jpg" data-format="mp4">
+        <p class="path">assets/changelog.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">29.3 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">2.3 MB</span></button>
+        </div>
         <a class="url" target="_blank" rel="noopener noreferrer"></a>
-        <img class="preview" loading="lazy" alt="assets/resource-pictures-completion.gif">
+        <img class="preview preview-gif" loading="lazy" alt="assets/changelog.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/cksp-lsp1.gif" data-mp4="assets/video/cksp-lsp1.mp4" data-poster="assets/video/cksp-lsp1.jpg" data-format="mp4">
+        <p class="path">assets/cksp-lsp1.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">16.1 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">2.1 MB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/cksp-lsp1.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/cksp-lsp2.gif" data-mp4="assets/video/cksp-lsp2.mp4" data-poster="assets/video/cksp-lsp2.jpg" data-format="mp4">
+        <p class="path">assets/cksp-lsp2.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">17.0 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">2.6 MB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/cksp-lsp2.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/cksp_jump_to_source.gif" data-mp4="assets/video/cksp_jump_to_source.mp4" data-poster="assets/video/cksp_jump_to_source.jpg" data-format="mp4">
+        <p class="path">assets/cksp_jump_to_source.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">10.6 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">992 KB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/cksp_jump_to_source.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/cksp_scope_hierarchy.png">
+        <p class="path">assets/cksp_scope_hierarchy.png</p>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/cksp_scope_hierarchy.png">
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/code_size_chart_white.png">
+        <p class="path">assets/code_size_chart_white.png</p>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/code_size_chart_white.png">
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/create_project.gif" data-mp4="assets/video/create_project.mp4" data-poster="assets/video/create_project.jpg" data-format="mp4">
+        <p class="path">assets/create_project.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">3.4 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">1.0 MB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/create_project.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/debugging-kontakt-thumbnail.png">
+        <p class="path">assets/debugging-kontakt-thumbnail.png</p>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/debugging-kontakt-thumbnail.png">
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/import-path-completion.gif" data-mp4="assets/video/import-path-completion.mp4" data-poster="assets/video/import-path-completion.jpg" data-format="mp4">
+        <p class="path">assets/import-path-completion.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">295 KB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">81 KB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/import-path-completion.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/kontakt-log.gif" data-mp4="assets/video/kontakt-log.mp4" data-poster="assets/video/kontakt-log.jpg" data-format="mp4">
+        <p class="path">assets/kontakt-log.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">8.6 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">1.6 MB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/kontakt-log.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/kontakt_log2.gif" data-mp4="assets/video/kontakt_log2.mp4" data-poster="assets/video/kontakt_log2.jpg" data-format="mp4">
+        <p class="path">assets/kontakt_log2.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">8.6 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">1.2 MB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/kontakt_log2.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/performance_chart_white.png">
+        <p class="path">assets/performance_chart_white.png</p>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/performance_chart_white.png">
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/project-workflow.gif" data-mp4="assets/video/project-workflow.mp4" data-poster="assets/video/project-workflow.jpg" data-format="mp4">
+        <p class="path">assets/project-workflow.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">13.3 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">1.4 MB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/project-workflow.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/resource-pictures-completion.gif" data-mp4="assets/video/resource-pictures-completion.mp4" data-poster="assets/video/resource-pictures-completion.jpg" data-format="mp4">
+        <p class="path">assets/resource-pictures-completion.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">221 KB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">71 KB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/resource-pictures-completion.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
         <div class="actions">
           <button type="button" class="copy">URL kopieren</button>
           <span class="status"></span>
@@ -128,6 +349,10 @@
     (function () {
       function encodeAssetPath(path) {
         return encodeURI(path).replace(/%2F/g, '/');
+      }
+
+      function absoluteUrl(path) {
+        return new URL(encodeAssetPath(path), document.baseURI).href;
       }
 
       async function copyText(text) {
@@ -146,29 +371,106 @@
         document.body.removeChild(ta);
       }
 
+      const cards = [];
+
+      // Ohne das wuerden beim Laden saemtliche Videos gleichzeitig starten.
+      // So laedt und spielt nur, was tatsaechlich im Blickfeld ist.
+      const videoObserver = ('IntersectionObserver' in window)
+        ? new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              const v = entry.target;
+              if (entry.isIntersecting) {
+                if (!v.src && v.dataset.src) v.src = v.dataset.src;
+                const p = v.play();
+                if (p && p.catch) p.catch(() => {});
+              } else {
+                v.pause();
+              }
+            });
+          }, { rootMargin: '200px' })
+        : null;
+
       document.querySelectorAll('.asset').forEach((card) => {
-        const path = card.dataset.path;
-        const url = new URL(encodeAssetPath(path), document.baseURI).href;
+        const gifUrl = absoluteUrl(card.dataset.path);
+        const mp4Url = card.dataset.mp4 ? absoluteUrl(card.dataset.mp4) : '';
 
         const link = card.querySelector('.url');
-        const img = card.querySelector('.preview');
+        const img = card.querySelector('.preview-gif');
+        const video = card.querySelector('.preview-mp4');
         const button = card.querySelector('.copy');
         const status = card.querySelector('.status');
 
-        link.href = url;
-        link.textContent = url;
-        img.src = url;
+        // Ohne MP4-Variante bleibt es bei der schlichten Bildkarte
+        if (!mp4Url) {
+          link.href = gifUrl;
+          link.textContent = gifUrl;
+          img.src = gifUrl;
+          button.addEventListener('click', () => copyWithFeedback(gifUrl, status));
+          return;
+        }
 
-        button.addEventListener('click', async () => {
-          try {
-            await copyText(url);
-            status.textContent = 'Kopiert';
-            setTimeout(() => {
-              status.textContent = '';
-            }, 1400);
-          } catch (err) {
-            status.textContent = 'Konnte nicht kopieren';
+        if (card.dataset.poster) {
+          video.poster = absoluteUrl(card.dataset.poster);
+        }
+
+        function apply(format) {
+          const isMp4 = format === 'mp4';
+          card.dataset.format = format;
+
+          const url = isMp4 ? mp4Url : gifUrl;
+          link.href = url;
+          link.textContent = url;
+
+          card.querySelectorAll('.fmt').forEach((btn) => {
+            btn.setAttribute('aria-pressed', String(btn.dataset.fmt === format));
+          });
+
+          img.hidden = isMp4;
+          video.hidden = !isMp4;
+
+          // Quellen erst setzen, wenn das Format wirklich sichtbar ist,
+          // damit die Seite nicht beide Varianten laedt.
+          if (isMp4) {
+            video.dataset.src = mp4Url;
+            if (videoObserver) {
+              videoObserver.observe(video);
+            } else if (!video.src) {
+              video.src = mp4Url;
+              const played = video.play();
+              if (played && played.catch) played.catch(() => {});
+            }
+          } else {
+            if (videoObserver) videoObserver.unobserve(video);
+            video.pause();
+            if (!img.src) img.src = gifUrl;
           }
+        }
+
+        card.querySelectorAll('.fmt').forEach((btn) => {
+          btn.addEventListener('click', () => apply(btn.dataset.fmt));
+        });
+
+        button.addEventListener('click', () => {
+          copyWithFeedback(card.dataset.format === 'mp4' ? mp4Url : gifUrl, status);
+        });
+
+        cards.push(apply);
+        apply(card.dataset.format || 'mp4');
+      });
+
+      async function copyWithFeedback(url, status) {
+        try {
+          await copyText(url);
+          status.textContent = 'Kopiert';
+          setTimeout(() => { status.textContent = ''; }, 1400);
+        } catch (err) {
+          status.textContent = 'Konnte nicht kopieren';
+        }
+      }
+
+      document.querySelectorAll('.global-fmt').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          cards.forEach((apply) => apply(btn.dataset.fmt));
         });
       });
     })();

@@ -7,6 +7,7 @@ on:
     paths:
       - 'assets/**'
       - 'scripts/generate-index.sh'
+      - 'scripts/convert-gifs.sh'
       - '.github/workflows/generate-index.yml'
       - 'index.html'
   workflow_dispatch:
@@ -32,6 +33,28 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+
+      # Die MP4s werden nicht versioniert, sondern gecacht. Der Key haengt an
+      # den GIF-Inhalten: aendert sich eines, greifen die restore-keys und
+      # convert-gifs.sh encodiert per SHA-Vergleich nur das neue GIF neu.
+      - name: Restore converted videos
+        uses: actions/cache@v4
+        with:
+          path: assets/video
+          key: gif-mp4-v1-${{ hashFiles('assets/**/*.gif') }}
+          restore-keys: |
+            gif-mp4-v1-
+
+      - name: Install ffmpeg
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends ffmpeg
+          fi
+          ffmpeg -version | head -1
+
+      - name: Convert GIFs to MP4
+        run: bash scripts/convert-gifs.sh
 
       - name: Generate index.html
         run: bash scripts/generate-index.sh
