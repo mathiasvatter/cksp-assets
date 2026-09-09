@@ -264,6 +264,20 @@
           <span class="status"></span>
         </div>
       </article>
+      <article class="asset" data-path="assets/editing-metadata.gif" data-mp4="assets/video/editing-metadata.mp4" data-poster="assets/video/editing-metadata.jpg" data-format="mp4">
+        <p class="path">assets/editing-metadata.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">3.0 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">388 KB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/editing-metadata.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
       <article class="asset" data-path="assets/import-path-completion.gif" data-mp4="assets/video/import-path-completion.mp4" data-poster="assets/video/import-path-completion.jpg" data-format="mp4">
         <p class="path">assets/import-path-completion.gif</p>
         <div class="formats">
@@ -315,6 +329,15 @@
           <span class="status"></span>
         </div>
       </article>
+      <article class="asset" data-path="assets/project-sidebar-and-github-releases.mp4" data-kind="video" data-poster="assets/video/project-sidebar-and-github-releases.jpg">
+        <p class="path">assets/project-sidebar-and-github-releases.mp4</p>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
       <article class="asset" data-path="assets/project-workflow.gif" data-mp4="assets/video/project-workflow.mp4" data-poster="assets/video/project-workflow.jpg" data-format="mp4">
         <p class="path">assets/project-workflow.gif</p>
         <div class="formats">
@@ -337,6 +360,20 @@
         </div>
         <a class="url" target="_blank" rel="noopener noreferrer"></a>
         <img class="preview preview-gif" loading="lazy" alt="assets/resource-pictures-completion.gif" hidden>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+      <article class="asset" data-path="assets/sublimeKSP-migration-assistant.gif" data-mp4="assets/video/sublimeKSP-migration-assistant.mp4" data-poster="assets/video/sublimeKSP-migration-assistant.jpg" data-format="mp4">
+        <p class="path">assets/sublimeKSP-migration-assistant.gif</p>
+        <div class="formats">
+          <button type="button" class="fmt" data-fmt="gif" aria-pressed="false">GIF <span class="size">6.1 MB</span></button>
+          <button type="button" class="fmt" data-fmt="mp4" aria-pressed="true">MP4 <span class="size">658 KB</span></button>
+        </div>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <img class="preview preview-gif" loading="lazy" alt="assets/sublimeKSP-migration-assistant.gif" hidden>
         <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
         <div class="actions">
           <button type="button" class="copy">URL kopieren</button>
@@ -391,7 +428,7 @@
         : null;
 
       document.querySelectorAll('.asset').forEach((card) => {
-        const gifUrl = absoluteUrl(card.dataset.path);
+        const srcUrl = absoluteUrl(card.dataset.path);
         const mp4Url = card.dataset.mp4 ? absoluteUrl(card.dataset.mp4) : '';
 
         const link = card.querySelector('.url');
@@ -400,12 +437,29 @@
         const button = card.querySelector('.copy');
         const status = card.querySelector('.status');
 
+        // Eingechecktes MP4: nur ein Format, also keine Umschalter
+        if (card.dataset.kind === 'video') {
+          link.href = srcUrl;
+          link.textContent = srcUrl;
+          if (card.dataset.poster) video.poster = absoluteUrl(card.dataset.poster);
+          video.dataset.src = srcUrl;
+          if (videoObserver) {
+            videoObserver.observe(video);
+          } else {
+            video.src = srcUrl;
+            const played = video.play();
+            if (played && played.catch) played.catch(() => {});
+          }
+          button.addEventListener('click', () => copyWithFeedback(srcUrl, status));
+          return;
+        }
+
         // Ohne MP4-Variante bleibt es bei der schlichten Bildkarte
         if (!mp4Url) {
-          link.href = gifUrl;
-          link.textContent = gifUrl;
-          img.src = gifUrl;
-          button.addEventListener('click', () => copyWithFeedback(gifUrl, status));
+          link.href = srcUrl;
+          link.textContent = srcUrl;
+          img.src = srcUrl;
+          button.addEventListener('click', () => copyWithFeedback(srcUrl, status));
           return;
         }
 
@@ -417,7 +471,7 @@
           const isMp4 = format === 'mp4';
           card.dataset.format = format;
 
-          const url = isMp4 ? mp4Url : gifUrl;
+          const url = isMp4 ? mp4Url : srcUrl;
           link.href = url;
           link.textContent = url;
 
@@ -442,7 +496,7 @@
           } else {
             if (videoObserver) videoObserver.unobserve(video);
             video.pause();
-            if (!img.src) img.src = gifUrl;
+            if (!img.src) img.src = srcUrl;
           }
         }
 
@@ -451,7 +505,7 @@
         });
 
         button.addEventListener('click', () => {
-          copyWithFeedback(card.dataset.format === 'mp4' ? mp4Url : gifUrl, status);
+          copyWithFeedback(card.dataset.format === 'mp4' ? mp4Url : srcUrl, status);
         });
 
         cards.push(apply);

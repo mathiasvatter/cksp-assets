@@ -28,8 +28,9 @@ human_size() {
   }'
 }
 
-# Abgeleitete Videos tauchen nicht als eigene Karten auf - sie haengen als
-# Alternativformat an der Karte ihres Quell-GIFs.
+# Abgeleitete Dateien tauchen nicht als eigene Karten auf - das MP4 haengt als
+# Alternativformat an der Karte seines Quell-GIFs, das Poster an der Karte
+# seines Quell-MP4s.
 assets=()
 while IFS= read -r path; do
   [[ "$path" == "$out_dir"/* ]] && continue
@@ -206,6 +207,7 @@ HTML_EMPTY
       # Passendes MP4 aus dem Konvertierungslauf suchen
       mp4=""
       poster=""
+      is_video=false
       # Kein ${var,,} - macOS liefert nur Bash 3.2 aus
       if [[ "$path" == *.gif || "$path" == *.GIF ]]; then
         rel="${path#assets/}"
@@ -214,9 +216,26 @@ HTML_EMPTY
           mp4="$candidate"
           [[ -f "$out_dir/${rel%.*}.jpg" ]] && poster="$out_dir/${rel%.*}.jpg"
         fi
+      elif [[ "$path" == *.mp4 || "$path" == *.MP4 ]]; then
+        # Eingechecktes MP4: keine Formatwahl, nur das Poster aus dem Build.
+        is_video=true
+        rel="${path#assets/}"
+        [[ -f "$out_dir/${rel%.*}.jpg" ]] && poster="$out_dir/${rel%.*}.jpg"
       fi
 
-      if [[ -n "$mp4" ]]; then
+      if [[ "$is_video" == true ]]; then
+        cat <<HTML_ITEM
+      <article class="asset" data-path="$escaped_path" data-kind="video" data-poster="$(html_escape "$poster")">
+        <p class="path">$escaped_path</p>
+        <a class="url" target="_blank" rel="noopener noreferrer"></a>
+        <video class="preview preview-mp4" autoplay muted loop playsinline preload="none"></video>
+        <div class="actions">
+          <button type="button" class="copy">URL kopieren</button>
+          <span class="status"></span>
+        </div>
+      </article>
+HTML_ITEM
+      elif [[ -n "$mp4" ]]; then
         cat <<HTML_ITEM
       <article class="asset" data-path="$escaped_path" data-mp4="$(html_escape "$mp4")" data-poster="$(html_escape "$poster")" data-format="mp4">
         <p class="path">$escaped_path</p>
@@ -298,7 +317,7 @@ HTML_ITEM
         : null;
 
       document.querySelectorAll('.asset').forEach((card) => {
-        const gifUrl = absoluteUrl(card.dataset.path);
+        const srcUrl = absoluteUrl(card.dataset.path);
         const mp4Url = card.dataset.mp4 ? absoluteUrl(card.dataset.mp4) : '';
 
         const link = card.querySelector('.url');
@@ -307,12 +326,29 @@ HTML_ITEM
         const button = card.querySelector('.copy');
         const status = card.querySelector('.status');
 
+        // Eingechecktes MP4: nur ein Format, also keine Umschalter
+        if (card.dataset.kind === 'video') {
+          link.href = srcUrl;
+          link.textContent = srcUrl;
+          if (card.dataset.poster) video.poster = absoluteUrl(card.dataset.poster);
+          video.dataset.src = srcUrl;
+          if (videoObserver) {
+            videoObserver.observe(video);
+          } else {
+            video.src = srcUrl;
+            const played = video.play();
+            if (played && played.catch) played.catch(() => {});
+          }
+          button.addEventListener('click', () => copyWithFeedback(srcUrl, status));
+          return;
+        }
+
         // Ohne MP4-Variante bleibt es bei der schlichten Bildkarte
         if (!mp4Url) {
-          link.href = gifUrl;
-          link.textContent = gifUrl;
-          img.src = gifUrl;
-          button.addEventListener('click', () => copyWithFeedback(gifUrl, status));
+          link.href = srcUrl;
+          link.textContent = srcUrl;
+          img.src = srcUrl;
+          button.addEventListener('click', () => copyWithFeedback(srcUrl, status));
           return;
         }
 
@@ -324,7 +360,7 @@ HTML_ITEM
           const isMp4 = format === 'mp4';
           card.dataset.format = format;
 
-          const url = isMp4 ? mp4Url : gifUrl;
+          const url = isMp4 ? mp4Url : srcUrl;
           link.href = url;
           link.textContent = url;
 
@@ -349,7 +385,7 @@ HTML_ITEM
           } else {
             if (videoObserver) videoObserver.unobserve(video);
             video.pause();
-            if (!img.src) img.src = gifUrl;
+            if (!img.src) img.src = srcUrl;
           }
         }
 
@@ -358,7 +394,7 @@ HTML_ITEM
         });
 
         button.addEventListener('click', () => {
-          copyWithFeedback(card.dataset.format === 'mp4' ? mp4Url : gifUrl, status);
+          copyWithFeedback(card.dataset.format === 'mp4' ? mp4Url : srcUrl, status);
         });
 
         cards.push(apply);
