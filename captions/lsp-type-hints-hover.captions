@@ -1,0 +1,5 @@
+# start (s)  caption
+0     Hover over any reference to see its declaration
+9.5   Hold Cmd to preview the whole declaration
+12    Hover over any reference to see its declaration
+17.5  Inlay hints show the type the compiler inferred
